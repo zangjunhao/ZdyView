@@ -2,6 +2,7 @@ package com.example.zdyview;
 
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -19,11 +20,17 @@ public class CircleImage extends ImageView {
     private Bitmap bitmap1;
     private Paint paint2=new Paint(Paint.ANTI_ALIAS_FLAG);
     private BitmapShader bitmapShader;//着色器，后面用图片着色
-    int  radius;
-    int wradius;
-    int hradius;
+    float  radius;
+    float wradius;
+    float hradius;
+    int kuangcolor;
+    float kuangwidth;
     public CircleImage(Context context, AttributeSet attrs) {
         super(context, attrs);
+        TypedArray a=context.obtainStyledAttributes(attrs,R.styleable.CircleImage);
+        kuangcolor=a.getColor(R.styleable.CircleImage_KuangColor,Color.BLACK);
+        kuangwidth=a.getDimension(R.styleable.CircleImage_KuangWidth,15);
+        a.recycle();
     }
 
     @Override
@@ -32,10 +39,11 @@ public class CircleImage extends ImageView {
         {
             return;
         }
-        paint2.setColor(Color.RED);
         paint2.setStyle(Paint.Style.STROKE);
         paint2.setStrokeWidth(20);
         myshader();
+        paint2.setColor(kuangcolor);
+        paint2.setStrokeWidth(kuangwidth);
         canvas.drawCircle(wradius,hradius,radius,paint1);
         canvas.drawCircle(wradius,hradius,radius,paint2);
     }
@@ -48,9 +56,9 @@ public class CircleImage extends ImageView {
             final int paddingright=getPaddingRight();
             final int paddingbottom=getPaddingBottom();
             final int paddingtop=getPaddingTop();
-            int viewWidth = getWidth()-paddingleft-paddingright;
-            int viewHeight = getHeight()-paddingbottom-paddingtop;
-            int min = Math.min(viewWidth, viewHeight);
+            float viewWidth = getWidth()-paddingleft-paddingright-2*kuangwidth;
+            float viewHeight = getHeight()-paddingbottom-paddingtop-2*kuangwidth;
+            float min = Math.min(viewWidth, viewHeight);
             float dstWidth = min;
             float dstHeight = min;
             if (bitmapShader == null || !rawBitmap.equals(bitmap1)) {
@@ -83,7 +91,7 @@ public class CircleImage extends ImageView {
         drawable.draw(canvas);
         return bitmap;
     }
-    }
+}
 
 
 

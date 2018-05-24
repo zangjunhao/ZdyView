@@ -15,7 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-public class CircleImage extends ImageView {
+public class CircleImage extends android.support.v7.widget.AppCompatImageView {
     private  Paint paint1=new Paint(Paint.ANTI_ALIAS_FLAG);
     private Bitmap bitmap1;
     private Paint paint2=new Paint(Paint.ANTI_ALIAS_FLAG);

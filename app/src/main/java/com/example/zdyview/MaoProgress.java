@@ -22,6 +22,7 @@ public class MaoProgress extends ProgressBar {
     @Override
     protected synchronized void onDraw(Canvas canvas) {
 
+        getProgress()
     }
     public int dp2px(int dp)//dp转px
     {

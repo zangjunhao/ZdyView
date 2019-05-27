@@ -7,9 +7,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.View;
+import android.widget.CalendarView;
 import android.widget.FrameLayout;
 
 public class ShadowLayout extends FrameLayout {
@@ -32,6 +35,9 @@ public class ShadowLayout extends FrameLayout {
     private Paint shadowPaint;
     private Paint borderPaint;
 
+    private RectF contentRect;
+    private RectF borderRect;
+
     public ShadowLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
@@ -39,6 +45,8 @@ public class ShadowLayout extends FrameLayout {
         porterDuffXfermode = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
         initPaint(context);
         realPadding();
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
     }
 
     public ShadowLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -48,6 +56,8 @@ public class ShadowLayout extends FrameLayout {
         porterDuffXfermode = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
         initPaint(context);
         realPadding();
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
     }
 
     public ShadowLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -57,6 +67,7 @@ public class ShadowLayout extends FrameLayout {
         porterDuffXfermode = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
         initPaint(context);
         realPadding();
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }
 
     private void initPaint(Context context) {
@@ -104,17 +115,36 @@ public class ShadowLayout extends FrameLayout {
         if ((shadowSides & LEFT) != 0) {
             left = xPadding;
         }
-        setPadding(left,top,right,bottom);
+        setPadding(left, top, right, bottom);
+    }
+
+
+    private void drawShadow(Canvas canvas){
+        canvas.save();
+        shadowPaint.setShadowLayer(shadowRadius,dx,dy,shadowColor);
+        canvas.drawRoundRect(contentRect,cornerRadius,cornerRadius,shadowPaint);
+        shadowPaint.reset();
+        canvas.restore();
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        contentRect = new RectF((float) getPaddingLeft(), (float) getPaddingTop(), (float) (w - getPaddingRight()), (float) (h - getPaddingBottom()));
+        float bw = borderWidth / 3;
+        if(bw > 0)
+        borderRect = new RectF(contentRect.left + bw, contentRect.top + bw, contentRect.right - bw, contentRect.bottom - bw);
+
+    }
+
+    private void drawChild(Canvas canvas ){
+
     }
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
+        drawShadow(canvas);
 
     }
 
